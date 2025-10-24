@@ -8,14 +8,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Потока независимый class Student
  */
 public class Student implements Comparable<Student> {
-    // Общий счётчик студентов
     private static AtomicInteger nextId = new AtomicInteger(1);
-
-    // Идентификатор студента
     private int id;
-    // Имя студента
     private String firstName;
-    // Фамилия студента
     private String lastName;
     private LocalDateTime birthDay;
 

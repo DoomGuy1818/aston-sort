@@ -13,17 +13,8 @@ import search.student.Student;
 public class SolutionBinarySearchByStudent {
 
     public static void main1(String[] args) throws Exception {
-        // Создаем список студентов
         List<Student> students = Collections.synchronizedList(new ArrayList<>());
 
-        // Добавляем студентов
-        students.add(new Student("Ivan", "Ivanov"));
-        students.add(new Student("Petr", "Petrov"));
-        students.add(new Student("Anna", "Sidorova"));
-        students.add(new Student("Maria", "Smirnova"));
-        students.add(new Student("Alexey", "Kuznetsov"));
-
-        // Сортируем по ID для бинарного поиска
         Collections.sort(students);
 
         System.out.println("Исходный список студентов:");
@@ -51,13 +42,6 @@ public class SolutionBinarySearchByStudent {
     public static void main(String[] args) throws Exception {
         // Создаем список студентов
         List<Student> students = Collections.synchronizedList(new ArrayList<>());
-
-        // Добавляем студентов
-        students.add(new Student("Ivan", "Ivanov"));
-        students.add(new Student("Petr", "Petrov"));
-        students.add(new Student("Anna", "Sidorova"));
-        students.add(new Student("Maria", "Smirnova"));
-        students.add(new Student("Alexey", "Kuznetsov"));
 
         // Сортируем по ID для бинарного поиска
         Collections.sort(students);
