@@ -11,12 +11,12 @@ public class BinarySearch {
      * @param <T>
      * @return
      */
-    public static synchronized <T> int binarySearch(List<? extends Comparable<? super T>> list, T target) {
+    public static synchronized <T extends Comparable<? super T>> int binarySearch(List<T> list, T target) {
         int l = 0, r = list.size() - 1;
 
         while (l <= r) {
             int mid = (l + r) / 2;
-            Comparable<? super T> midValue = list.get(mid);
+            T midValue = list.get(mid);
             int compMidToTarget = midValue.compareTo(target);
 
             if (compMidToTarget < 0) {
