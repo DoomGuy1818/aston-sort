@@ -1,4 +1,4 @@
-package search.tests;
+
 
 import search.BinarySearch;
 import search.student.Student;
