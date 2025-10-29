@@ -1,4 +1,4 @@
-
+package test.java;
 
 import search.BinarySearch;
 import search.student.Student;
