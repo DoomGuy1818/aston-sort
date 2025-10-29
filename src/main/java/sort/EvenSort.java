@@ -1,4 +1,4 @@
-package search.student.evensort;
+package sort;
 
 import search.student.Student;
 
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EvenSort {
     public List<Student> students;
