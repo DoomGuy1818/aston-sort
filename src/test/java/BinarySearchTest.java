@@ -1,8 +1,5 @@
-package test.java;
-
 import search.BinarySearch;
 import search.student.Student;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -30,7 +27,7 @@ class BinarySearchTest {
         executor.execute(() -> {
             Student target = students.get(targetIndex); // Берем студента из середины списка
             int index = BinarySearch.binarySearch(students, target);
-            Assertions.assertEquals(targetIndex, index);
+            assertEquals(targetIndex, index);
             System.out.println(Thread.currentThread().getName() +
                     ": Найден студент " + target.getFirstName() + " на позиции " + index);
         });
@@ -50,7 +47,7 @@ class BinarySearchTest {
         executor.execute(() -> {
             Student nonExistent = new Student("Non", "Existent");
             int index = BinarySearch.binarySearch(students, nonExistent);
-            Assertions.assertEquals(-1, index);
+            assertEquals(-1, index);
             System.out.println(Thread.currentThread().getName() +
                     ": Поиск несуществующего студента, результат: " + index);
         });
