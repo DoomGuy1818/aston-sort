@@ -79,6 +79,7 @@ public class Student implements Comparable<Student> {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", birthDay=" + birthDay +
                 '}';
     }
 
