@@ -3,8 +3,8 @@ import search.student.Student;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import sort.EvenSort;
 import utils.FileManager;
@@ -72,26 +72,38 @@ public class Application {
         String[] firstNames = {"Виктория", "Кристина", "Ахтем", "Евгений", "Андрей"};
         String[] lastNames = {"Иванченко", "Петров", "Сидоренко", "Кузнецов", "Смирнов"};
         Random random = new Random();
-//        students.clear();
-        for (int i = 0; i < n; i++) {
-            String f = firstNames[random.nextInt(firstNames.length)];
-            String l = lastNames[random.nextInt(lastNames.length)];
-            students.add(new Student(f, l, LocalDateTime.now().minusYears(random.nextInt(10) + 18)));
-        }
+
+        students.addAll(
+                IntStream.range(0, n)
+                        .mapToObj(i -> new Student(
+                                firstNames[random.nextInt(firstNames.length)],
+                                lastNames[random.nextInt(lastNames.length)],
+                                LocalDateTime.now().minusYears(random.nextInt(10) + 18)
+                        ))
+                        .toList()
+        );
+
         System.out.println("Создано " + n + " случайных объектов.");
         printStudents();
     }
 
     private static void fillManually() {
         int n = inputInt("Введите количество объектов: ");
-//        students.clear();
-        for (int i = 0; i < n; i++) {
-            System.out.print("Введите имя объекта №" + (i + 1) + ": ");
-            String first = sc.next();
-            System.out.print("Введите фамилию объекта №" + (i + 1) + ": ");
-            String last = sc.next();
-            students.add(new Student(first, last, LocalDateTime.now()));
-        }
+
+        students.addAll(
+                IntStream.range(0, n)
+                        .mapToObj(i -> {
+                            System.out.print("Введите имя объекта №" + (i + 1) + ": ");
+                            String first = sc.next();
+
+                            System.out.print("Введите фамилию объекта №" + (i + 1) + ": ");
+                            String last = sc.next();
+
+                            return new Student(first, last, LocalDateTime.now());
+                        })
+                        .toList()
+        );
+
         System.out.println("Создано " + n + " объектов.");
         printStudents();
     }
