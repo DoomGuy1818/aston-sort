@@ -2,12 +2,16 @@
 import search.BinarySearch;
 import search.student.Student;
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import sort.EvenSort;
+import sort.InsertionSort;
 import utils.FileManager;
 
 public class Application {
@@ -35,8 +39,11 @@ public class Application {
                 case 1 -> loadFromFile();
                 case 2 -> fillRandom();
                 case 3 -> fillManually();
+                case 4 -> sortObjects();
+
 //                case 4 -> ;
                 case 6 -> binarySearch();
+
                 case 5 -> sortEvenObjects();
                 case 7 -> printStudents();
                 case 8 -> clearStudents();
@@ -51,6 +58,89 @@ public class Application {
             }
         }
         System.out.println("Программа завершена.");
+    }
+
+    public static void sortObjects() {
+        if (students == null || students.isEmpty()) {
+            System.out.println("Список пуст. Добавьте объекты для сортировки.");
+            return;
+        }
+
+        Class<?> classOfObjects = students.get(0).getClass();
+//        System.out.println("Класс объектов: " + classOfObjects.getSimpleName());
+
+        List<Field> fields = Arrays.stream(classOfObjects.getDeclaredFields())
+                .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                .filter(f -> Comparable.class.isAssignableFrom(f.getType())).toList();
+
+        if (fields.isEmpty()) {
+            System.out.println("Нет полей, подходящих для сортировки (должны реализовывать Comparable).");
+            return;
+        }
+
+        System.out.println("Выберите поле для сортировки:");
+        for (int i = 0; i < fields.size(); i++) {
+            System.out.println((i + 1) + ". " + fields.get(i).getName());
+        }
+
+        int choice = inputInt("Введите номер поля: ");
+        if (choice < 1 || choice > fields.size()) {
+            System.out.println("Некорректный выбор.");
+            return;
+        }
+
+        Field field = fields.get(choice - 1);
+        field.setAccessible(true);
+
+        System.out.println("""
+        Выберите порядок сортировки:
+        1. По возрастанию
+        2. По убыванию
+        """);
+        int direction = inputInt("Введите номер: ");
+        boolean descending = direction == 2;
+
+        try {
+
+            class StudentWrapper implements Comparable<StudentWrapper> {
+                Student student;
+
+                StudentWrapper(Student s) { this.student = s; }
+
+                @Override
+                public int compareTo(StudentWrapper o) {
+                    try {
+                        Comparable v1 = (Comparable) field.get(this.student);
+                        Comparable v2 = (Comparable) field.get(o.student);
+                        return v1.compareTo(v2);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            List<StudentWrapper> wrapperList = students.stream()
+                    .map(StudentWrapper::new)
+                    .collect(Collectors.toList());
+
+            InsertionSort.sort(wrapperList);
+
+            if (descending) Collections.reverse(wrapperList);
+
+            students.clear();
+            for (StudentWrapper w : wrapperList) {
+                students.add(w.student);
+            }
+
+            printStudents();
+            System.out.println("Список успешно отсортирован по полю: " + field.getName() +
+                    (descending ? " (по убыванию)" : " (по возрастанию)"));
+
+        } catch (ClassCastException e) {
+            System.out.println("Невозможно сравнить значения поля - несовместимые типы.");
+        } catch (RuntimeException e) {
+            System.out.println("Ошибка при сортировке: выбранное поле " + field + " содержит значение null" );
+        }
     }
 
     private static void loadFromFile() {
