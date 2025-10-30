@@ -37,6 +37,14 @@ public class Student implements Comparable<Student> {
         this.id = nextId.getAndIncrement();
     }
 
+    // Конструктор по id, имени, фамилии и дню рождения
+    public Student(int id, String firstName, String lastName, LocalDateTime birthDay) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDay = birthDay;
+    }
+
     public String getFirstName() {
         return firstName;
     }
