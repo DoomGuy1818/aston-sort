@@ -3,8 +3,10 @@ import search.student.Student;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import sort.EvenSort;
 import utils.FileManager;
 
 public class Application {
@@ -20,10 +22,11 @@ public class Application {
             System.out.println("2. Заполнить данные случайным образом");
             System.out.println("3. Ввести данные вручную");
             System.out.println("4. Отсортировать объекты");
-            System.out.println("5. Найти объект");
-            System.out.println("6. Вывести все объекты");
-            System.out.println("7. Очистить список объектов");
-            System.out.println("8. Выйти");
+            System.out.println("5. Отсортировать объекты с чётными ID");
+            System.out.println("6. Найти объект");
+            System.out.println("7. Вывести все объекты");
+            System.out.println("8. Очистить список объектов");
+            System.out.println("9. Выйти");
 
             int userVariant = inputInt("Выберите действие: ");
 
@@ -32,10 +35,10 @@ public class Application {
                 case 2 -> fillRandom();
                 case 3 -> fillManually();
 //                case 4 -> ;
-//                case 5 -> ;
-                case 6 -> printStudents();
-                case 7 -> clearStudents();
-                case 8 -> {
+                case 5 -> sortEvenObjects();
+                case 7 -> printStudents();
+                case 8 -> clearStudents();
+                case 9 -> {
                     System.out.println("Вы уверены, что хотите выйти? " +
                             "\n1. Да;" +
                             "\n2. Нет.");
@@ -132,5 +135,16 @@ public class Application {
         } else {
             System.out.println("Очистка отменена.");
         }
+    }
+    private static void sortEvenObjects() {
+        if (students.isEmpty()) {
+            System.out.println("Список пуст. Пожалуйста, добавьте объекты для сортировки.");
+            return;
+        }
+        EvenSort evenSorter = new EvenSort(students);
+        List<Student> sorted = evenSorter.sortEventStudents();
+        System.out.println("Список объектов после сортировки по чётным ID:");
+        sorted.forEach(System.out::println);
+        students = sorted;
     }
 }
