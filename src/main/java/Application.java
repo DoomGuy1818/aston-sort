@@ -1,4 +1,5 @@
 
+import search.BinarySearch;
 import search.student.Student;
 import java.io.*;
 import java.lang.reflect.Field;
@@ -39,6 +40,10 @@ public class Application {
                 case 2 -> fillRandom();
                 case 3 -> fillManually();
                 case 4 -> sortObjects();
+
+//                case 4 -> ;
+                case 6 -> binarySearch();
+
                 case 5 -> sortEvenObjects();
                 case 7 -> printStudents();
                 case 8 -> clearStudents();
@@ -245,5 +250,26 @@ public class Application {
         System.out.println("Список объектов после сортировки по чётным ID:");
         sorted.forEach(System.out::println);
         students = sorted;
+    }
+
+    private static void binarySearch() {
+        if (students.isEmpty()) {
+            System.out.println("Нет нужного студента");
+        }
+
+        System.out.println("Введите имя:");
+        String name = sc.next();
+        System.out.println("Введите Фамилию");
+        String lastname = sc.next();
+        System.out.println("Введите ID студента");
+        int id = Integer.parseInt(sc.next());
+
+        Student.Builder sBuilder = new Student.Builder();
+        LocalDateTime birthDay = LocalDateTime.of(2004, 5, 15, 0, 0);
+        sBuilder.id(id).firstName(name).lastName(lastname).birthDay(birthDay);
+        Student target = new Student(sBuilder);
+        int index = BinarySearch.binarySearch(students, target);
+
+        System.out.println("Ваш студент это: " + students.get(index));
     }
 }
