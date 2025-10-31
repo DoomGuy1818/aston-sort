@@ -16,6 +16,8 @@ import java.util.stream.IntStream;
 
 import sort.EvenSort;
 import sort.InsertionSort;
+import sort.strategy.EvenSortStrategy;
+import sort.strategy.SortContext;
 import utils.FileManager;
 
 public class Application {
@@ -81,7 +83,7 @@ public class Application {
         }
         Field field = fields.get(choice - 1);
         field.setAccessible(true);
-        System.out.println("""
+        System.out.print("""
         Выберите порядок сортировки:
         1. По возрастанию
         2. По убыванию
@@ -248,8 +250,9 @@ public class Application {
             System.out.println("Список пуст. Пожалуйста, добавьте объекты для сортировки");
             return;
         }
-        EvenSort evenSorter = new EvenSort(students);
-        List<Student> sorted = evenSorter.sortEventStudents();
+        SortContext<Student> context = new SortContext<>();
+        context.setStrategy(new EvenSortStrategy());
+        List<Student> sorted = context.execute(students);
         System.out.println("Список объектов после сортировки по чётным ID:");
         sorted.forEach(System.out::println);
         students = sorted;
