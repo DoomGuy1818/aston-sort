@@ -1,5 +1,6 @@
 package search.student;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,7 +13,7 @@ public class Student implements Comparable<Student> {
     private int id;
     private String firstName;
     private String lastName;
-    private LocalDateTime birthDay;
+    private LocalDate birthDay;
 
     // Конструктор через билдер
     public Student(Builder builder) {
@@ -30,7 +31,7 @@ public class Student implements Comparable<Student> {
     }
 
     // Конструктор по имени, фамилии и дню рождения
-    public Student(String firstName, String lastName, LocalDateTime birthDay) {
+    public Student(String firstName, String lastName, LocalDate birthDay) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDay = birthDay;
@@ -38,7 +39,7 @@ public class Student implements Comparable<Student> {
     }
 
     // Конструктор по id, имени, фамилии и дню рождения
-    public Student(int id, String firstName, String lastName, LocalDateTime birthDay) {
+    public Student(int id, String firstName, String lastName, LocalDate birthDay) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,11 +66,11 @@ public class Student implements Comparable<Student> {
         return id;
     }
 
-    public LocalDateTime getBirthDay() {
+    public LocalDate  getBirthDay() {
         return birthDay;
     }
 
-    public synchronized void setBirthDay(LocalDateTime birthDay) {
+    public synchronized void setBirthDay(LocalDate  birthDay) {
         this.birthDay = birthDay;
     }
 
@@ -92,7 +93,7 @@ public class Student implements Comparable<Student> {
         private String firstName;
         private String lastName;
         private int id;
-        private LocalDateTime birthDay;
+        private LocalDate birthDay;
 
         public Builder firstName(String firstName) {
             this.firstName = firstName;
@@ -104,7 +105,7 @@ public class Student implements Comparable<Student> {
             return this;
         }
 
-        public Builder birthDay(LocalDateTime birthDay) {
+        public Builder birthDay(LocalDate  birthDay) {
             this.birthDay = birthDay;
             return this;
         }

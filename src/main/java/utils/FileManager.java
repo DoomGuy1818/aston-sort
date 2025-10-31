@@ -6,7 +6,10 @@ import search.student.Student;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -36,8 +39,27 @@ public class FileManager {
     public static void loadFromJsonFile(String path, List<Student> students) throws IOException {
         try (Reader reader = new FileReader(path)) {
             Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>)
-                            (json, type, context) -> LocalDateTime.parse(json.getAsString(), java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                    .registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, type, context) -> {
+                        String value = json.getAsString().trim();
+
+                        // Возможные форматы
+                        DateTimeFormatter[] formatters = new DateTimeFormatter[]{
+                                DateTimeFormatter.ISO_LOCAL_DATE,                // 2002-05-03
+                                DateTimeFormatter.ofPattern("dd-MM-yyyy"),        // 05-03-2002
+                                DateTimeFormatter.ofPattern("dd/MM/yyyy"),        // 05/03/2002
+                                DateTimeFormatter.ofPattern("yyyy/MM/dd")         // 2002/03/05
+                        };
+
+                        for (DateTimeFormatter f : formatters) {
+                            try {
+                                return LocalDate.parse(value, f);
+                            } catch (DateTimeParseException ignored) {
+                            }
+                        }
+
+                        System.out.println("Некорректный формат даты: " + value + " — будет установлено null.");
+                        return null;
+                    })
                     .create();
 
             Type listType = new TypeToken<List<Student>>() {}.getType();
