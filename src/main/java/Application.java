@@ -1,4 +1,3 @@
-
 import search.BinarySearch;
 import search.student.Student;
 import java.io.*;
@@ -22,11 +21,9 @@ import utils.FileManager;
 public class Application {
     private static final Scanner sc = new Scanner(System.in);
     private static List<Student> students = new ArrayList<>();
-
     public static void main(String[] args) {
         boolean exitFlag = false;
-
-        System.out.println("Добро пожаловать в приложение для сортировки кастомных классов.");
+        System.out.println("Добро пожаловать в приложение для сортировки кастомных классов!");
         while (!exitFlag) {
             System.out.println("\n1. Загрузить данные из файла");
             System.out.println("2. Заполнить данные случайным образом");
@@ -37,66 +34,53 @@ public class Application {
             System.out.println("7. Вывести все объекты");
             System.out.println("8. Очистить список объектов");
             System.out.println("9. Выйти");
-
             int userVariant = inputInt("Выберите действие: ");
-
             switch (userVariant) {
                 case 1 -> loadFromFile();
                 case 2 -> fillRandom();
                 case 3 -> fillManually();
                 case 4 -> sortObjects();
-
-//                case 4 -> ;
-                case 6 -> binarySearch();
-
                 case 5 -> sortEvenObjects();
+                case 6 -> binarySearch();
                 case 7 -> printStudents();
                 case 8 -> clearStudents();
                 case 9 -> {
                     System.out.println("Вы уверены, что хотите выйти? " +
-                            "\n1. Да;" +
-                            "\n2. Нет.");
+                            "\n1. Да" +
+                            "\n2. Нет");
                     int confirm = inputInt("Выберите действие: ");
                     if (confirm == 1) exitFlag = true;
                 }
                 default -> System.out.println("Неизвестная команда. Пожалуйста, повторите попытку");
             }
         }
-        System.out.println("Программа завершена.");
+        System.out.println("Программа завершена");
     }
-
     public static void sortObjects() {
         if (students == null || students.isEmpty()) {
-            System.out.println("Список пуст. Добавьте объекты для сортировки.");
+            System.out.println("Список пуст. Пожалуйста, добавьте объекты для сортировки");
             return;
         }
-
         Class<?> classOfObjects = students.get(0).getClass();
 //        System.out.println("Класс объектов: " + classOfObjects.getSimpleName());
-
         List<Field> fields = Arrays.stream(classOfObjects.getDeclaredFields())
                 .filter(f -> !Modifier.isStatic(f.getModifiers()))
                 .filter(f -> Comparable.class.isAssignableFrom(f.getType())).toList();
-
         if (fields.isEmpty()) {
-            System.out.println("Нет полей, подходящих для сортировки (должны реализовывать Comparable).");
+            System.out.println("Не найдены поля, которые должны реализовывать Comparable и подходящих для сортировки");
             return;
         }
-
-        System.out.println("Выберите поле для сортировки:");
+        System.out.println("Выберите поле для сортировки: ");
         for (int i = 0; i < fields.size(); i++) {
             System.out.println((i + 1) + ". " + fields.get(i).getName());
         }
-
         int choice = inputInt("Введите номер поля: ");
         if (choice < 1 || choice > fields.size()) {
-            System.out.println("Некорректный выбор.");
+            System.out.println("Некорректный выбор. Пожалуйста, повторите попытку");
             return;
         }
-
         Field field = fields.get(choice - 1);
         field.setAccessible(true);
-
         System.out.println("""
         Выберите порядок сортировки:
         1. По возрастанию
@@ -104,14 +88,10 @@ public class Application {
         """);
         int direction = inputInt("Введите номер: ");
         boolean descending = direction == 2;
-
         try {
-
             class StudentWrapper implements Comparable<StudentWrapper> {
                 Student student;
-
                 StudentWrapper(Student s) { this.student = s; }
-
                 @Override
                 public int compareTo(StudentWrapper o) {
                     try {
@@ -127,11 +107,8 @@ public class Application {
             List<StudentWrapper> wrapperList = students.stream()
                     .map(StudentWrapper::new)
                     .collect(Collectors.toList());
-
             InsertionSort.sort(wrapperList);
-
             if (descending) Collections.reverse(wrapperList);
-
             students.clear();
             for (StudentWrapper w : wrapperList) {
                 students.add(w.student);
@@ -139,15 +116,13 @@ public class Application {
 
             printStudents();
             System.out.println("Список успешно отсортирован по полю: " + field.getName() +
-                    (descending ? " (по убыванию)" : " (по возрастанию)"));
-
+                    (descending ? " по убыванию" : " по возрастанию"));
         } catch (ClassCastException e) {
-            System.out.println("Невозможно сравнить значения поля - несовместимые типы.");
+            System.out.println("Невозможно сравнить значения поля - несовместимые типы");
         } catch (RuntimeException e) {
             System.out.println("Ошибка при сортировке: выбранное поле " + field + " содержит значение null" );
         }
     }
-
     private static void loadFromFile() {
         System.out.print("Введите путь к файлу: ");
         String path = sc.next();
@@ -155,9 +130,6 @@ public class Application {
             if (path.toLowerCase().endsWith(".json")) {
                 FileManager.loadFromJsonFile(path, students);
                 System.out.println("Данные успешно загружены из JSON. Количество объектов: " + students.size());
-            } else {
-                FileManager.loadFromTextFile(path, students);
-                System.out.println("Данные успешно загружены из текстового файла. Количество объектов: " + students.size());
             }
             printStudents();
         } catch (IOException e) {
@@ -172,7 +144,6 @@ public class Application {
 
         students.addAll(
                 IntStream.range(0, n)
-
                         .mapToObj(i -> {
                             int age = random.nextInt(10) + 18; // возраст 18–27
                             int year = LocalDate.now().getYear() - age;
@@ -180,9 +151,7 @@ public class Application {
                             int day = random.nextInt(
                                     Month.of(month).length(Year.isLeap(year))
                             ) + 1; // корректное число дней в месяце
-
                             LocalDate birthDate = LocalDate.of(year, month, day);
-
                             return new Student(
                                     firstNames[random.nextInt(firstNames.length)],
                                     lastNames[random.nextInt(lastNames.length)],
@@ -190,16 +159,12 @@ public class Application {
                             );
                         })
                         .toList()
-
         );
-
-        System.out.println("Создано " + n + " случайных объектов.");
+        System.out.println("Создано " + n + " случайных объектов");
         printStudents();
     }
-
     private static void fillManually() {
         int n = inputInt("Введите количество объектов: ");
-
         students.addAll(
                 IntStream.range(0, n)
                         .mapToObj(i -> {
@@ -215,31 +180,26 @@ public class Application {
                             while (birthDate == null) {
                                 System.out.print("Введите дату рождения (в формате YYYY-MM-DD) объекта №" + (i + 1) + ": ");
                                 String input = sc.next();
-
                                 try {
                                     birthDate = LocalDate.parse(input, formatter);
-
                                     if (birthDate.isAfter(LocalDate.now())) {
-                                        System.out.println("Ошибка: дата рождения не может быть в будущем.");
+                                        System.out.println("Ошибка даты: дата рождения не может быть в будущем. Пожалуйста, повторите попытку");
                                         birthDate = null;
                                     }
-
                                 } catch (DateTimeParseException e) {
-                                    System.out.println("Ошибка формата! Введите дату в виде YYYY-MM-DD (например, 2003-12-25)");
+                                    System.out.println("Ошибка формата: пожалуйста, введите дату в виде YYYY-MM-DD (например, 2003-12-25)");
                                 }
                             }
-
                             return new Student(first, last, birthDate);
                         })
                         .toList()
         );
-
-        System.out.println("Создано " + n + " объектов.");
+        System.out.println("Создано " + n + " объектов");
         printStudents();
     }
     private static void printStudents() {
         if (students.isEmpty()) {
-            System.out.println("Список пуст.");
+            System.out.println("Список пуст");
         } else {
             students.forEach(System.out::println);
         }
@@ -250,18 +210,18 @@ public class Application {
             try {
                 return Integer.parseInt(sc.next());
             } catch (NumberFormatException e) {
-                System.out.println("Ошибка ввода. Пожалуйста, повторите попытку.");
+                System.out.println("Ошибка ввода. Пожалуйста, повторите попытку");
             }
         }
     }
     private static void clearStudents() {
         if (students.isEmpty()) {
-            System.out.println("Список уже пуст.");
+            System.out.println("Список уже пуст");
             return;
         }
         System.out.println("Вы уверены, что хотите очистить список объектов? " +
-                "\n1. Да;" +
-                "\n2. Нет.");
+                "\n1. Да" +
+                "\n2. Нет");
         int confirm = inputInt("Выберите действие: ");
         if (confirm == 1) {
             students.clear();
@@ -273,14 +233,14 @@ public class Application {
             } catch (ReflectiveOperationException e) {
                 System.out.println("Ошибка при сбросе ID: " + e.getMessage());
             }
-            System.out.println("Список объектов успешно очищен.");
+            System.out.println("Список объектов успешно очищен");
         } else {
-            System.out.println("Очистка отменена.");
+            System.out.println("Очистка отменена");
         }
     }
     private static void sortEvenObjects() {
         if (students.isEmpty()) {
-            System.out.println("Список пуст. Пожалуйста, добавьте объекты для сортировки.");
+            System.out.println("Список пуст. Пожалуйста, добавьте объекты для сортировки");
             return;
         }
         EvenSort evenSorter = new EvenSort(students);
@@ -289,25 +249,20 @@ public class Application {
         sorted.forEach(System.out::println);
         students = sorted;
     }
-
     private static void binarySearch() {
         if (students.isEmpty()) {
-            System.out.println("Нет нужного студента");
+            System.out.println("Список пуст. Пожалуйста, добавьте объекты для поиска");
         }
-
-        System.out.println("Введите имя:");
-        String name = sc.next();
-        System.out.println("Введите Фамилию");
-        String lastname = sc.next();
-        System.out.println("Введите ID студента");
+        System.out.println("Введите ID объекта:");
         int id = Integer.parseInt(sc.next());
-
         Student.Builder sBuilder = new Student.Builder();
-        LocalDate birthDay = LocalDate.of(2004, 5, 15);
-        sBuilder.id(id).firstName(name).lastName(lastname).birthDay(birthDay);
+        sBuilder.id(id);
         Student target = new Student(sBuilder);
         int index = BinarySearch.binarySearch(students, target);
-
-        System.out.println("Ваш студент это: " + students.get(index));
+        if (index >= 0 && index < students.size()) {
+            System.out.println("Найденный объект: " + students.get(index));
+        } else {
+            System.out.println("Объект с заданным ID = " + id + " не найден");
+        }
     }
 }
