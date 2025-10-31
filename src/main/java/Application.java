@@ -283,7 +283,6 @@ public class Application {
             System.out.println(resultMessage);
         }
 
-        // ✅ Запись в лог
         writeToFile("Поиск по ID: " + id + "\nРезультат: " + resultMessage);
     }
     private static final String RESULT_FILE = "results.log";

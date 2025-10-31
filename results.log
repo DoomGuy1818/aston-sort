@@ -1,0 +1,7 @@
+[2025-10-31 18:25:44] Список успешно отсортирован по полю: lastName по возрастанию. Количество элементов: 5
+Student{id=3, firstName='Ахтем', lastName='Иванченко', birthDay=2003-06-19}
+Student{id=4, firstName='Андрей', lastName='Иванченко', birthDay=2006-10-28}
+Student{id=5, firstName='Кристина', lastName='Петров', birthDay=2006-03-08}
+Student{id=1, firstName='Кристина', lastName='Сидоренко', birthDay=2003-01-13}
+Student{id=2, firstName='Виктория', lastName='Сидоренко', birthDay=2002-01-14}
+--------------------------------------------------
