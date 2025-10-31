@@ -16,8 +16,6 @@ import java.util.stream.IntStream;
 
 import sort.EvenSort;
 import sort.InsertionSort;
-import sort.strategy.EvenSortStrategy;
-import sort.strategy.SortContext;
 import utils.FileManager;
 
 public class Application {
@@ -83,7 +81,7 @@ public class Application {
         }
         Field field = fields.get(choice - 1);
         field.setAccessible(true);
-        System.out.print("""
+        System.out.println("""
         Выберите порядок сортировки:
         1. По возрастанию
         2. По убыванию
@@ -119,6 +117,11 @@ public class Application {
             printStudents();
             System.out.println("Список успешно отсортирован по полю: " + field.getName() +
                     (descending ? " по убыванию" : " по возрастанию"));
+
+            String directionMsg = (descending ? "по убыванию" : "по возрастанию");
+            String sortMessage = "Список успешно отсортирован по полю: " + field.getName() + " " + directionMsg + ". Количество элементов: " + students.size();
+            writeToFile(sortMessage + "\n" + students.stream().map(Student::toString).collect(Collectors.joining("\n")));
+
         } catch (ClassCastException e) {
             System.out.println("Невозможно сравнить значения поля - несовместимые типы");
         } catch (RuntimeException e) {
@@ -245,29 +248,57 @@ public class Application {
             System.out.println("Список пуст. Пожалуйста, добавьте объекты для сортировки");
             return;
         }
-        SortContext<Student> context = new SortContext<>();
-        context.setStrategy(new EvenSortStrategy());
-//        EvenSort evenSorter = new EvenSort(students);
-//        List<Student> sorted = evenSorter.sortEventStudents();
-        List<Student> sorted = context.execute(students);
+        EvenSort evenSorter = new EvenSort(students);
+        List<Student> sorted = evenSorter.sortEventStudents();
         System.out.println("Список объектов после сортировки по чётным ID:");
         sorted.forEach(System.out::println);
         students = sorted;
+
+        String message = "Сортировка по чётным ID. Найдено " + sorted.size() + " студентов с чётным ID:\n" +
+                sorted.stream().map(Student::toString).collect(Collectors.joining("\n"));
+        System.out.println();
+
+        writeToFile(message);
     }
     private static void binarySearch() {
         if (students.isEmpty()) {
             System.out.println("Список пуст. Пожалуйста, добавьте объекты для поиска");
+            return;
         }
         System.out.println("Введите ID объекта:");
         int id = Integer.parseInt(sc.next());
+
         Student.Builder sBuilder = new Student.Builder();
         sBuilder.id(id);
         Student target = new Student(sBuilder);
+
         int index = BinarySearch.binarySearch(students, target);
+
+        String resultMessage;
         if (index >= 0 && index < students.size()) {
-            System.out.println("Найденный объект: " + students.get(index));
+            resultMessage = "Найденный объект: " + students.get(index);
+            System.out.println(resultMessage);
         } else {
-            System.out.println("Объект с заданным ID = " + id + " не найден");
+            resultMessage = "Объект с заданным ID = " + id + " не найден";
+            System.out.println(resultMessage);
+        }
+
+        // ✅ Запись в лог
+        writeToFile("Поиск по ID: " + id + "\nРезультат: " + resultMessage);
+    }
+    private static final String RESULT_FILE = "results.log";
+
+    /**
+     * Записывает строку в файл, дополняя его содержимое
+     * @param message строка для записи
+     */
+    private static void writeToFile(String message) {
+        try (PrintWriter out = new PrintWriter(new FileWriter(RESULT_FILE, true))) {
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            out.println("[" + timestamp + "] " + message);
+            out.println("--------------------------------------------------");
+        } catch (IOException e) {
+            System.out.println("Не удалось записать в файл " + RESULT_FILE + ": " + e.getMessage());
         }
     }
 }
