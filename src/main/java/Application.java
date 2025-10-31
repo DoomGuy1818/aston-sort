@@ -4,7 +4,12 @@ import search.student.Student;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -167,12 +172,25 @@ public class Application {
 
         students.addAll(
                 IntStream.range(0, n)
-                        .mapToObj(i -> new Student(
-                                firstNames[random.nextInt(firstNames.length)],
-                                lastNames[random.nextInt(lastNames.length)],
-                                LocalDateTime.now().minusYears(random.nextInt(10) + 18)
-                        ))
+
+                        .mapToObj(i -> {
+                            int age = random.nextInt(10) + 18; // возраст 18–27
+                            int year = LocalDate.now().getYear() - age;
+                            int month = random.nextInt(12) + 1;
+                            int day = random.nextInt(
+                                    Month.of(month).length(Year.isLeap(year))
+                            ) + 1; // корректное число дней в месяце
+
+                            LocalDate birthDate = LocalDate.of(year, month, day);
+
+                            return new Student(
+                                    firstNames[random.nextInt(firstNames.length)],
+                                    lastNames[random.nextInt(lastNames.length)],
+                                    birthDate
+                            );
+                        })
                         .toList()
+
         );
 
         System.out.println("Создано " + n + " случайных объектов.");
@@ -191,7 +209,27 @@ public class Application {
                             System.out.print("Введите фамилию объекта №" + (i + 1) + ": ");
                             String last = sc.next();
 
-                            return new Student(first, last, LocalDateTime.now());
+                            LocalDate birthDate = null;
+                            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE; // формат YYYY-MM-DD
+
+                            while (birthDate == null) {
+                                System.out.print("Введите дату рождения (в формате YYYY-MM-DD) объекта №" + (i + 1) + ": ");
+                                String input = sc.next();
+
+                                try {
+                                    birthDate = LocalDate.parse(input, formatter);
+
+                                    if (birthDate.isAfter(LocalDate.now())) {
+                                        System.out.println("Ошибка: дата рождения не может быть в будущем.");
+                                        birthDate = null;
+                                    }
+
+                                } catch (DateTimeParseException e) {
+                                    System.out.println("Ошибка формата! Введите дату в виде YYYY-MM-DD (например, 2003-12-25)");
+                                }
+                            }
+
+                            return new Student(first, last, birthDate);
                         })
                         .toList()
         );
@@ -265,7 +303,7 @@ public class Application {
         int id = Integer.parseInt(sc.next());
 
         Student.Builder sBuilder = new Student.Builder();
-        LocalDateTime birthDay = LocalDateTime.of(2004, 5, 15, 0, 0);
+        LocalDate birthDay = LocalDate.of(2004, 5, 15);
         sBuilder.id(id).firstName(name).lastName(lastname).birthDay(birthDay);
         Student target = new Student(sBuilder);
         int index = BinarySearch.binarySearch(students, target);

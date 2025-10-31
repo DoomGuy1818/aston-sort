@@ -1,4 +1,4 @@
-package test.java;
+
 
 import org.junit.jupiter.api.Test;
 import search.student.OutputHandler;
@@ -7,6 +7,7 @@ import search.student.Student;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,10 @@ class OutputHandlerTest {
     void testWriteSortedStudents() throws IOException {
         // Подготовка
         List<Student> students = new ArrayList<>();
-        LocalDateTime birthDayIvan = LocalDateTime.of(2004, 5, 15, 0, 0);
+        LocalDate birthDayIvan = LocalDate.of(2004, 5, 15);
         students.add(new Student("Иван", "Иванов", birthDayIvan));
 
-        LocalDateTime birthDayAnna = LocalDateTime.of(2003, 10, 20, 0, 0);
+        LocalDate birthDayAnna = LocalDate.of(2003, 10, 20 );
         students.add(new Student("Анна", "Смирнова", birthDayAnna));
 
         // Удаление старого файла перед тестом
@@ -48,7 +49,7 @@ class OutputHandlerTest {
 
     @Test
     void testWriteSearchResult_StudentFound() throws IOException {
-        Student target = new Student("Иван", "Иванов", LocalDateTime.of(2004, 5, 15, 0, 0));
+        Student target = new Student("Иван", "Иванов", LocalDate.of(2004, 5, 15));
         int index = 0;
 
         // Убедимся, что файл существует или создаём его
@@ -69,7 +70,7 @@ class OutputHandlerTest {
 
     @Test
     void testWriteSearchResult_StudentNotFound() throws IOException {
-        Student target = new Student("Иван", "Иванов", LocalDateTime.of(2004, 5, 15, 0, 0));
+        Student target = new Student("Иван", "Иванов", LocalDate.of(2004, 5, 15));
         int index = -1;
 
         // Убедимся, что файл существует

@@ -2,6 +2,6 @@
   {"firstName": "Виктория", "lastName": "Разнодумова"},
   {"firstName": "Кристина", "lastName": "Владыкина"},
   {"firstName": "Ахтем", "lastName": "Муслединов"},
-  {"firstName": "Евгений", "lastName": "Батов"},
-  {"firstName": "Андрей", "lastName": "Павин"}
+  {"firstName": "Евгений", "lastName": "Батов", "birthDay":  "05-03-2002"},
+  {"firstName": "Андрей", "lastName": "Павин", "birthDay":  "2002-05-03-2002"}
 ]
